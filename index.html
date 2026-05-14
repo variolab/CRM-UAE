@@ -26,26 +26,28 @@
   <div class="top">
     <div>
       <div class="pill">Diametral / EXSRTEL UAE Partner CRM · Complete Phase 1+</div>
-      <h1>UAE Sales Activity Control</h1>
-      <p class="lead">Kompletní jednoduché CRM pro řízení obchodního partnera v SAE/GCC: obchodní zástupci, firmy, kontakty, obchodní příležitosti, aktivity, nabídky, CORE vazby, procesní kontrola a exporty. Data jsou v této verzi uložena lokálně v prohlížeči.</p>
+      <h1><span data-i18n="title">UAE Sales Activity Control</span></h1>
+      <p class="lead"><span data-i18n="lead">Kompletní jednoduché CRM pro řízení obchodního partnera v SAE/GCC: obchodní zástupci, firmy, kontakty, obchodní příležitosti, aktivity, nabídky, CORE vazby, procesní kontrola a exporty. Data jsou v této verzi uložena lokálně v prohlížeči.</span></p>
     </div>
     <div class="actions">
-      <button class="btn secondary" onclick="exportCSV('salesReps')">Export reps</button>
-      <button class="btn secondary" onclick="exportCSV('companies')">Export companies</button>
-      <button class="btn secondary" onclick="exportCSV('deals')">Export deals</button>
-      <button class="btn secondary" onclick="exportManagementReport()">Management CSV</button>
-      <button class="btn danger" onclick="resetDemo()">Reset demo</button>
+      <button class="btn secondary" onclick="exportCSV('salesReps')" data-i18n="exportReps">Export reps</button>
+      <button class="btn secondary" onclick="exportCSV('companies')" data-i18n="exportCompanies">Export companies</button>
+      <button class="btn secondary" onclick="exportCSV('deals')" data-i18n="exportDeals">Export deals</button>
+      <button class="btn secondary" onclick="exportManagementReport()" data-i18n="managementCsv">Management CSV</button>
+      <button class="btn danger" onclick="resetDemo()" data-i18n="resetDemo">Reset demo</button>
+      <button class="btn secondary" onclick="setLang('cs')">CZ</button>
+      <button class="btn secondary" onclick="setLang('en')">EN</button>
     </div>
   </div>
 
   <div id="tabs" class="tabs"></div>
 
   <div class="toolbar">
-    <input id="q" placeholder="Search company, sales rep, contact, deal, CORE number..." oninput="renderAll()">
-    <button class="btn secondary" onclick="openSalesRep()">+ New sales rep</button>
-    <button class="btn secondary" onclick="openCompany()">+ New company</button>
-    <button class="btn secondary" onclick="openContact()">+ New contact</button>
-    <button class="btn" onclick="openDeal()">+ New deal</button>
+    <input id="q" placeholder="Hledat firmu, obchodníka, kontakt, deal, CORE číslo..." data-i18n-placeholder="searchPlaceholder" oninput="renderAll()">
+    <button class="btn secondary" onclick="openSalesRep()" data-i18n="newSalesRep">+ New sales rep</button>
+    <button class="btn secondary" onclick="openCompany()" data-i18n="newCompany">+ New company</button>
+    <button class="btn secondary" onclick="openContact()" data-i18n="newContact">+ New contact</button>
+    <button class="btn" onclick="openDeal()" data-i18n="newDeal">+ New deal</button>
   </div>
 
   <section id="dashboard" class="section"></section>
@@ -59,12 +61,67 @@
 
 <div id="modal" class="modal">
   <div class="modalbox">
-    <div class="modalhead"><h2 id="modalTitle"></h2><button class="btn secondary" onclick="closeModal()">Close</button></div>
+    <div class="modalhead"><h2 id="modalTitle"></h2><button class="btn secondary" onclick="closeModal()" data-i18n="close">Close</button></div>
     <div id="modalBody" class="modalbody"></div>
   </div>
 </div>
 
 <script>
+
+const I18N = {
+  en: {
+    title: "UAE Sales Activity Control",
+    lead: "Complete simple CRM for managing the UAE/GCC sales partner: sales representatives, companies, contacts, opportunities, activities, offers, CORE links, process control and exports. In this version, data is stored locally in the browser.",
+    resetDemo: "Reset demo",
+    exportReps: "Export reps",
+    exportCompanies: "Export companies",
+    exportDeals: "Export deals",
+    managementCsv: "Management CSV",
+    newSalesRep: "+ New sales rep",
+    newCompany: "+ New company",
+    newContact: "+ New contact",
+    newDeal: "+ New deal",
+    searchPlaceholder: "Search company, sales rep, contact, deal, CORE number...",
+    tabs: ["Dashboard","Sales representatives","Companies","Contacts","Deals / Offers","Activities","Process control"],
+    close: "Close",
+    active: "Active",
+    inactive: "Inactive",
+    noData: "No data.",
+    deleteConfirm: "Delete this record?",
+    resetConfirm: "Reset all browser data to demo data?",
+    reassignRep: "This sales representative is used. Reassign records first."
+  },
+  cs: {
+    title: "Kontrola obchodních aktivit v SAE",
+    lead: "Kompletní jednoduché CRM pro řízení obchodního partnera v SAE/GCC: obchodní zástupci, firmy, kontakty, obchodní příležitosti, aktivity, nabídky, CORE vazby, procesní kontrola a exporty. Data jsou v této verzi uložena lokálně v prohlížeči.",
+    resetDemo: "Obnovit demo",
+    exportReps: "Export obchodníků",
+    exportCompanies: "Export firem",
+    exportDeals: "Export dealů",
+    managementCsv: "Manažerský CSV",
+    newSalesRep: "+ Nový obchodník",
+    newCompany: "+ Nová firma",
+    newContact: "+ Nový kontakt",
+    newDeal: "+ Nový deal",
+    searchPlaceholder: "Hledat firmu, obchodníka, kontakt, deal, CORE číslo...",
+    tabs: ["Dashboard","Obchodní zástupci","Firmy","Kontakty","Dealy / nabídky","Aktivity","Procesní kontrola"],
+    close: "Zavřít",
+    active: "Aktivní",
+    inactive: "Neaktivní",
+    noData: "Žádná data.",
+    deleteConfirm: "Smazat tento záznam?",
+    resetConfirm: "Obnovit všechna data v tomto prohlížeči na demo data?",
+    reassignRep: "Tento obchodní zástupce je použitý u firem, dealů nebo aktivit. Nejprve záznamy přeřaďte."
+  }
+};
+let lang = localStorage.getItem("uae-crm-lang") || "cs";
+function t(key){return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key}
+function setLang(newLang){lang=newLang;localStorage.setItem("uae-crm-lang",lang);applyLang();renderAll()}
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=t(el.dataset.i18nPlaceholder)});
+}
+
 const STORAGE_KEY="diametral-uae-crm-complete-salesreps-v1";
 const stages=["Lead","Qualified","Meeting planned","Offer sent","Negotiation","Won","Lost"];
 const segments=["University","Technical school","Industry","Government","Distributor","Contractor","Other"];
@@ -113,16 +170,16 @@ function days(date){return Math.round((new Date(date)-new Date(today()))/8640000
 function ageDays(date){return Math.max(0,Math.round((new Date(today())-new Date(date||today()))/86400000))}
 function badge(t,c=""){return `<span class="badge ${c}">${esc(t)}</span>`}
 function qmatch(o){const q=document.getElementById("q")?.value.toLowerCase()||"";return JSON.stringify(o).toLowerCase().includes(q)}
-function renderTabs(){document.getElementById("tabs").innerHTML=[["dashboard","Dashboard"],["salesreps","Sales representatives"],["companies","Companies"],["contacts","Contacts"],["deals","Deals / Offers"],["activities","Activities"],["process","Process control"]].map(([k,l])=>`<button class="tab ${tab===k?'active':''}" onclick="setTab('${k}')">${l}</button>`).join("")}
+function renderTabs(){const keys=["dashboard","salesreps","companies","contacts","deals","activities","process"];document.getElementById("tabs").innerHTML=keys.map((k,i)=>`<button class="tab ${tab===k?'active':''}" onclick="setTab('${k}')">${t("tabs")[i]}</button>`).join("")}
 function setTab(t){tab=t;renderAll()}
-function renderAll(){save();renderTabs();document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(tab).classList.add("active");renderDashboard();renderSalesReps();renderCompanies();renderContacts();renderDeals();renderActivities();renderProcess()}
+function renderAll(){save();renderTabs();applyLang();document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(tab).classList.add("active");renderDashboard();renderSalesReps();renderCompanies();renderContacts();renderDeals();renderActivities();renderProcess()}
 function repStats(id){let open=data.deals.filter(d=>d.salesRepId===id&&!["Won","Lost"].includes(d.stage)),won=data.deals.filter(d=>d.salesRepId===id&&d.stage==="Won"),acts=data.activities.filter(a=>a.salesRepId===id),last=acts.map(a=>a.date).sort().reverse()[0]||"";return{companies:data.companies.filter(c=>c.salesRepId===id).length,openDeals:open.length,pipeline:open.reduce((s,d)=>s+Number(d.value||0),0),weighted:open.reduce((s,d)=>s+Number(d.value||0)*Number(d.probability||0)/100,0),won:won.reduce((s,d)=>s+Number(d.value||0),0),activities:acts.length,lastActivity:last,inactiveDays:last?ageDays(last):999}}
 function renderDashboard(){let open=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)),pipe=open.reduce((s,d)=>s+Number(d.value||0),0),weighted=open.reduce((s,d)=>s+Number(d.value||0)*Number(d.probability||0)/100,0),stale=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)&&ageDays(d.lastActivityDate)>7),issues=data.deals.filter(d=>!d.crmComplete||!d.coreComplete||!d.paperFolder||!d.coreNumber||!d.offerNo||!d.salesRepId),inactive=data.salesReps.filter(r=>r.active&&repStats(r.id).inactiveDays>7),up=[...data.activities].sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(0,6);document.getElementById("dashboard").innerHTML=`<div class="grid5"><div class="card metric"><div class="label">Sales reps</div><div class="value">${data.salesReps.filter(r=>r.active).length}</div><div class="sub">Active representatives</div></div><div class="card metric"><div class="label">Companies</div><div class="value">${data.companies.length}</div><div class="sub">Institutions and prospects</div></div><div class="card metric"><div class="label">Open pipeline</div><div class="value">${fmt(pipe)}</div><div class="sub">${open.length} active opportunities</div></div><div class="card metric"><div class="label">Weighted pipeline</div><div class="value">${fmt(weighted)}</div><div class="sub">Value × probability</div></div><div class="card metric"><div class="label">Alerts</div><div class="value">${stale.length+issues.length+inactive.length}</div><div class="sub">Stale/process/rep inactivity</div></div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Sales representative performance</h2>${data.salesReps.map(r=>{let s=repStats(r.id),pct=r.targetMonthlyPipeline?Math.min(100,Math.round(s.pipeline/r.targetMonthlyPipeline*100)):0;return `<div class="rowline"><div><b>${esc(r.name)}</b><br><span class="muted">${esc(r.company)} · ${esc(r.territory)}</span><br><span class="small">Pipeline ${fmt(s.pipeline)} · Activities ${s.activities} · Last ${esc(s.lastActivity||"—")}</span><div class="bar"><span style="width:${pct}%"></span></div></div>${s.inactiveDays>7&&r.active?badge(s.inactiveDays+" days inactive","amber"):badge(r.active?"Active":"Inactive",r.active?"green":"red")}</div>`}).join("")}</div><div class="card"><h2>Next activities</h2>${up.map(a=>`<div class="rowline"><div><b>${esc(a.subject)}</b><br><span class="muted">${esc(company(a.companyId).company)} · ${esc(a.type)} · ${esc(rep(a.salesRepId).name)}</span><br><span class="small">${esc(a.nextAction)}</span></div>${badge(a.date,days(a.date)<0?'red':days(a.date)<=3?'amber':'blue')}</div>`).join("")}</div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Pipeline by stage</h2>${stages.map(s=>{let arr=data.deals.filter(d=>d.stage===s),sum=arr.reduce((x,d)=>x+Number(d.value||0),0),pct=pipe?Math.min(100,Math.round(sum/pipe*100)):0;return `<p class="small"><b>${s}</b> <span class="muted">${fmt(sum)} · ${arr.length}</span></p><div class="bar"><span style="width:${pct}%"></span></div>`}).join("")}</div><div class="card"><h2>Deals without update > 7 days</h2>${stale.length?stale.map(d=>`<div class="rowline"><div><b>${esc(company(d.companyId).company)} — ${esc(d.title)}</b><br><span class="muted">${esc(rep(d.salesRepId).name)} · ${esc(d.offerNo)} · last ${esc(d.lastActivityDate)}</span></div>${badge(ageDays(d.lastActivityDate)+" days","amber")}</div>`).join(""):'<p class="muted">No stale open deals.</p>'}</div></div>`}
 function renderSalesReps(){let rows=data.salesReps.filter(qmatch);document.getElementById("salesreps").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openSalesRep()">+ New sales representative</button></div><div class="grid3">${rows.map(r=>{let s=repStats(r.id);return `<div class="card"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2>${esc(r.name)}</h2><p class="muted">${esc(r.company)} · ${esc(r.role)}</p></div>${badge(r.active?"Active":"Inactive",r.active?"green":"red")}</div><p class="small"><b>Territory:</b> ${esc(r.territory)}<br><b>E-mail:</b> ${esc(r.email||"—")}<br><b>Phone:</b> ${esc(r.phone||"—")}<br><b>WhatsApp:</b> ${esc(r.whatsapp||"—")}</p><div class="kpis">${badge("Companies: "+s.companies,"blue")}${badge("Open deals: "+s.openDeals,"blue")}${badge("Pipeline: "+fmt(s.pipeline),"green")}${badge("Activities: "+s.activities)}${s.inactiveDays>7&&r.active?badge("Inactive "+s.inactiveDays+" days","amber"):badge("Last: "+(s.lastActivity||"—"))}</div><p class="muted small">${esc(r.notes)}</p><button class="btn secondary small" onclick="openSalesRep('${r.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('salesReps','${r.id}')">Delete</button></div>`}).join("")}</div><div class="card" style="margin-top:14px"><h2>KPI table</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th>Territory</th><th>Status</th><th>Companies</th><th>Open deals</th><th>Pipeline</th><th>Weighted</th><th>Won</th><th>Activities</th><th>Last activity</th><th>Inactive days</th></tr></thead><tbody>${rows.map(r=>{let s=repStats(r.id);return `<tr><td><b>${esc(r.name)}</b><br><span class="muted">${esc(r.email)}</span></td><td>${esc(r.territory)}</td><td>${badge(r.active?"Active":"Inactive",r.active?"green":"red")}</td><td>${s.companies}</td><td>${s.openDeals}</td><td>${fmt(s.pipeline)}</td><td>${fmt(s.weighted)}</td><td>${fmt(s.won)}</td><td>${s.activities}</td><td>${esc(s.lastActivity||"—")}</td><td>${s.inactiveDays===999?"—":s.inactiveDays}</td></tr>`}).join("")}</tbody></table></div></div>`}
 function renderCompanies(){let rows=data.companies.filter(c=>qmatch({...c,salesRep:rep(c.salesRepId).name}));document.getElementById("companies").innerHTML=`<div class="grid2">${rows.map(c=>`<div class="card"><div style="display:flex;justify-content:space-between"><div><h2>${esc(c.company)}</h2><p class="muted">${esc(c.segment)} · ${esc(c.emirate)}</p></div>${badge(c.status,c.status.includes("Existing")?'green':c.status.includes("Active")?'blue':'')}</div><p><b>Sales rep:</b> ${esc(rep(c.salesRepId).name||"—")}<br><b>Source:</b> ${esc(c.source)}<br><b>Next step:</b> ${esc(c.nextStep)}<br><b>Next date:</b> ${esc(c.nextDate)}</p><p class="muted">${esc(c.notes)}</p><button class="btn secondary small" onclick="openCompany('${c.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('companies','${c.id}')">Delete</button></div>`).join("")}</div>`}
-function renderContacts(){let rows=data.contacts.filter(c=>qmatch({...c,company:company(c.companyId).company}));document.getElementById("contacts").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openContact()">+ New contact</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Name</th><th>Position</th><th>Role</th><th>E-mail</th><th>Phone</th><th>Notes</th><th></th></tr></thead><tbody>${rows.map(c=>`<tr><td>${esc(company(c.companyId).company)}</td><td><b>${esc(c.name)}</b></td><td>${esc(c.position)}</td><td>${esc(c.decisionRole)}</td><td>${esc(c.email)}</td><td>${esc(c.phone)}</td><td>${esc(c.notes)}</td><td class="nowrap"><button class="btn secondary small" onclick="openContact('${c.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('contacts','${c.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
+function renderContacts(){let rows=data.contacts.filter(c=>qmatch({...c,company:company(c.companyId).company}));document.getElementById("contacts").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openContact()" data-i18n="newContact">+ New contact</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Name</th><th>Position</th><th>Role</th><th>E-mail</th><th>Phone</th><th>Notes</th><th></th></tr></thead><tbody>${rows.map(c=>`<tr><td>${esc(company(c.companyId).company)}</td><td><b>${esc(c.name)}</b></td><td>${esc(c.position)}</td><td>${esc(c.decisionRole)}</td><td>${esc(c.email)}</td><td>${esc(c.phone)}</td><td>${esc(c.notes)}</td><td class="nowrap"><button class="btn secondary small" onclick="openContact('${c.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('contacts','${c.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
 function control(d){return `${d.crmComplete?'✅':'⚠️'} CRM ${d.coreComplete?'✅':'⚠️'} CORE ${d.paperFolder?'✅':'⚠️'} Folder ${d.offerPdf?'✅':'—'} PDF`}
-function renderDeals(){let rows=data.deals.filter(d=>qmatch({...d,company:company(d.companyId).company,contact:contact(d.contactId).name,salesRep:rep(d.salesRepId).name}));document.getElementById("deals").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openDeal()">+ New deal</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Sales rep</th><th>Contact</th><th>Deal</th><th>Product</th><th>Stage</th><th>Value</th><th>Probability</th><th>Close</th><th>Offer / CORE</th><th>Last update</th><th>Control</th><th></th></tr></thead><tbody>${rows.map(d=>`<tr><td><b>${esc(company(d.companyId).company)}</b></td><td>${esc(rep(d.salesRepId).name||"—")}</td><td>${esc(contact(d.contactId).name)}</td><td>${esc(d.title)}<br><span class="muted">${esc(d.lastActivity)}</span></td><td>${esc(d.product)}</td><td>${badge(d.stage,d.stage==='Won'?'green':d.stage==='Lost'?'red':'blue')}</td><td>${fmt(d.value,d.currency)}</td><td>${esc(d.probability)}%</td><td>${esc(d.closeDate)}</td><td>${esc(d.offerNo)}<br><span class="muted">${esc(d.coreNumber)}</span></td><td>${esc(d.lastActivityDate)}<br>${ageDays(d.lastActivityDate)>7&&!["Won","Lost"].includes(d.stage)?badge(ageDays(d.lastActivityDate)+" days","amber"):""}</td><td class="small">${control(d)}</td><td class="nowrap"><button class="btn secondary small" onclick="openDeal('${d.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('deals','${d.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
+function renderDeals(){let rows=data.deals.filter(d=>qmatch({...d,company:company(d.companyId).company,contact:contact(d.contactId).name,salesRep:rep(d.salesRepId).name}));document.getElementById("deals").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openDeal()" data-i18n="newDeal">+ New deal</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Sales rep</th><th>Contact</th><th>Deal</th><th>Product</th><th>Stage</th><th>Value</th><th>Probability</th><th>Close</th><th>Offer / CORE</th><th>Last update</th><th>Control</th><th></th></tr></thead><tbody>${rows.map(d=>`<tr><td><b>${esc(company(d.companyId).company)}</b></td><td>${esc(rep(d.salesRepId).name||"—")}</td><td>${esc(contact(d.contactId).name)}</td><td>${esc(d.title)}<br><span class="muted">${esc(d.lastActivity)}</span></td><td>${esc(d.product)}</td><td>${badge(d.stage,d.stage==='Won'?'green':d.stage==='Lost'?'red':'blue')}</td><td>${fmt(d.value,d.currency)}</td><td>${esc(d.probability)}%</td><td>${esc(d.closeDate)}</td><td>${esc(d.offerNo)}<br><span class="muted">${esc(d.coreNumber)}</span></td><td>${esc(d.lastActivityDate)}<br>${ageDays(d.lastActivityDate)>7&&!["Won","Lost"].includes(d.stage)?badge(ageDays(d.lastActivityDate)+" days","amber"):""}</td><td class="small">${control(d)}</td><td class="nowrap"><button class="btn secondary small" onclick="openDeal('${d.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('deals','${d.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
 function renderActivities(){let rows=data.activities.filter(a=>qmatch({...a,company:company(a.companyId).company,deal:deal(a.dealId).title,salesRep:rep(a.salesRepId).name}));document.getElementById("activities").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openActivity()">+ New activity</button></div><div class="grid3">${rows.map(a=>`<div class="card"><div style="display:flex;justify-content:space-between"><div><h2>${esc(a.subject)}</h2><p class="muted">${esc(company(a.companyId).company)} · ${esc(deal(a.dealId).title||"No deal")}</p></div>${badge(a.result,a.result==='Done'?'green':days(a.date)<0?'red':days(a.date)<=3?'amber':'blue')}</div><p><b>Sales rep:</b> ${esc(rep(a.salesRepId).name||"—")}<br><b>Type:</b> ${esc(a.type)}<br><b>Date:</b> ${esc(a.date)}</p><p class="muted">${esc(a.nextAction)}</p><button class="btn secondary small" onclick="openActivity('${a.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('activities','${a.id}')">Delete</button></div>`).join("")}</div>`}
 function renderProcess(){let issues=data.deals.filter(d=>!d.crmComplete||!d.coreComplete||!d.paperFolder||!d.coreNumber||!d.offerNo||!d.salesRepId),over=data.activities.filter(a=>days(a.date)<0&&a.result!=="Done"),stale=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)&&ageDays(d.lastActivityDate)>7),inactive=data.salesReps.filter(r=>r.active&&repStats(r.id).inactiveDays>7);document.getElementById("process").innerHTML=`<div class="card"><h2>Mandatory operating rule</h2><p class="lead">Records in CRM and CORE are considered the only decisive source of information about the status of each business case. Every opportunity must have responsible sales representative, next step, offer number, CORE number and documented activity history.</p></div><div class="grid4" style="margin-top:14px"><div class="card metric"><div class="label">Process issues</div><div class="value">${issues.length}</div><div class="sub">CRM/CORE/folder/offer/rep</div></div><div class="card metric"><div class="label">Overdue activities</div><div class="value">${over.length}</div><div class="sub">Planned date passed</div></div><div class="card metric"><div class="label">No update > 7 days</div><div class="value">${stale.length}</div><div class="sub">Open deals</div></div><div class="card metric"><div class="label">Inactive reps</div><div class="value">${inactive.length}</div><div class="sub">No activity > 7 days</div></div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Deals requiring correction</h2>${issues.map(d=>`<div class="rowline"><div><b>${esc(company(d.companyId).company)} — ${esc(d.title)}</b><br><span class="muted">${esc(rep(d.salesRepId).name||"Missing sales rep")} · ${esc(d.offerNo||"Missing offer number")} · ${esc(d.coreNumber||"Missing CORE number")}</span></div><div>${!d.salesRepId?badge("Sales rep missing","amber"):""} ${!d.crmComplete?badge("CRM incomplete","amber"):""} ${!d.coreComplete?badge("CORE incomplete","amber"):""} ${!d.paperFolder?badge("Folder missing","amber"):""} ${!d.offerNo?badge("Offer No missing","amber"):""}</div></div>`).join("")||'<p class="muted">No process issues.</p>'}</div><div class="card"><h2>Inactive sales representatives</h2>${inactive.map(r=>{let s=repStats(r.id);return `<div class="rowline"><div><b>${esc(r.name)}</b><br><span class="muted">${esc(r.company)} · ${esc(r.territory)} · ${esc(r.email||"")}</span></div>${badge(s.inactiveDays+" days inactive","amber")}</div>`}).join("")||'<p class="muted">No inactive representatives.</p>'}</div></div>`}
 function opts(a,s){return a.map(x=>`<option value="${esc(x)}" ${String(x)===String(s)?"selected":""}>${esc(x)}</option>`).join("")}
@@ -147,8 +204,8 @@ function saveDeal(id){let f=form("fDeal");["value","probability"].forEach(k=>f[k
 function openActivity(id){let dc=data.companies[0]?.id||"",dr=company(dc).salesRepId||data.salesReps[0]?.id||"",a=id?data.activities.find(x=>x.id===id):{companyId:dc,dealId:"",salesRepId:dr,type:"Call",subject:"",date:today(),result:"Planned",nextAction:""};modal(id?"Edit activity":"New activity",`<form id="fAct" class="formgrid"><label>Company<select name="companyId" id="actCompany" onchange="refreshAct()">${companyOpts(a.companyId)}</select></label><label>Assigned sales representative<select name="salesRepId" id="actRep">${repOpts(a.salesRepId)}</select></label><label>Deal<select name="dealId" id="actDeal">${dealOpts(a.companyId,a.dealId)}</select></label><label>Activity type<select name="type">${opts(["Call","E-mail","Visit","Demo","Offer follow-up","Management review"],a.type)}</select></label><label>Subject<input name="subject" value="${esc(a.subject)}" required></label><label>Date<input type="date" name="date" value="${esc(a.date)}"></label><label>Result<select name="result">${opts(["Planned","Done","Postponed","No response","Cancelled"],a.result)}</select></label><label class="full">Next action / result note<textarea name="nextAction">${esc(a.nextAction)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveActivity('${id||""}')">Save</button></div></form>`)}
 function refreshAct(){let cid=document.getElementById("actCompany").value;document.getElementById("actDeal").innerHTML=dealOpts(cid,"");let r=company(cid).salesRepId;if(r)document.getElementById("actRep").value=r}
 function saveActivity(id){let f=form("fAct");if(id)Object.assign(data.activities.find(x=>x.id===id),f);else data.activities.push({id:uid("a"),...f});closeModal();renderAll()}
-function deleteItem(col,id){if(col==="salesReps"&&(data.companies.some(c=>c.salesRepId===id)||data.deals.some(d=>d.salesRepId===id)||data.activities.some(a=>a.salesRepId===id))){alert("This sales representative is used. Reassign records first.");return}if(confirm("Delete this record?")){data[col]=data[col].filter(x=>x.id!==id);renderAll()}}
-function resetDemo(){if(confirm("Reset all browser data to demo data?")){data=structuredClone(demo);save();renderAll()}}
+function deleteItem(col,id){if(col==="salesReps"&&(data.companies.some(c=>c.salesRepId===id)||data.deals.some(d=>d.salesRepId===id)||data.activities.some(a=>a.salesRepId===id))){alert(t("reassignRep"));return}if(confirm(t("deleteConfirm"))){data[col]=data[col].filter(x=>x.id!==id);renderAll()}}
+function resetDemo(){if(confirm(t("resetConfirm"))){data=structuredClone(demo);save();renderAll()}}
 function exportCSV(col){
   let rows=[];
   if(col==="companies"){
@@ -255,8 +312,19 @@ function exportManagementReport(){
   }));
   downloadCSV("uae-crm-management-report.csv",rows)
 }
-function downloadCSV(filename,rows){if(!rows.length){alert("No data.");return}let heads=[...new Set(rows.flatMap(r=>Object.keys(r)))],escCsv=v=>`"${String(v??"").replaceAll('"','""')}"`,csv=[heads.join(","),...rows.map(r=>heads.map(h=>escCsv(r[h])).join(","))].join("\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
-renderAll();
+function downloadCSV(filename,rows){
+  if(!rows.length){alert(t("noData"));return}
+  let heads=[...new Set(rows.flatMap(r=>Object.keys(r)))];
+  let escCsv=v=>`"${String(v??"").replaceAll('"','""')}"`;
+  let csv="\ufeff"+[heads.join(";"),...rows.map(r=>heads.map(h=>escCsv(r[h])).join(";"))].join("\n");
+  let blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  let url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(url)
+}
+renderAll();applyLang();
 </script>
 </body>
 </html>

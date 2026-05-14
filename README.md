@@ -13,3 +13,9 @@ Settings → Pages → Build and deployment → Source: Deploy from a branch →
 
 Po uložení bude web dostupný na adrese:
 https://USERNAME.github.io/REPOSITORY-NAME/
+
+
+## Aktualizace
+- Přidán přepínač jazyka CZ / EN.
+- CSV export používá středník `;`, aby se správně otevíral v českém Excelu.
+- CSV obsahuje BOM UTF-8 kvůli diakritice v Excelu.
