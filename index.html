@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Diametral / EXSRTEL UAE CRM</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#fff;--ink:#111827;--muted:#64748b;--line:#dbe3ef;--dark:#111827;--green:#047857;--blue:#1d4ed8;--amber:#b45309;--red:#b91c1c}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Segoe UI,Arial,sans-serif;color:var(--ink)}.wrap{max-width:1320px;margin:0 auto;padding:24px}
+    h1{font-size:34px;margin:10px 0 8px}h2{font-size:18px;margin:0 0 12px}.lead{color:var(--muted);max-width:900px;line-height:1.45;font-size:14px}
+    .top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.pill{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--muted);font-size:12px}
+    .tabs,.actions{display:flex;gap:8px;flex-wrap:wrap}.tabs{margin:22px 0}.btn,.tab{border:0;border-radius:14px;padding:10px 14px;font-weight:700;cursor:pointer}.btn{background:var(--dark);color:white}.btn.secondary,.tab{background:#fff;color:#334155;border:1px solid var(--line)}.btn.danger{background:#fff;color:var(--red);border:1px solid #fecaca}.btn.small{padding:7px 10px;font-size:12px;border-radius:10px}.tab.active{background:var(--dark);color:white}
+    .toolbar{display:grid;grid-template-columns:1fr auto auto auto auto;gap:10px;margin-bottom:18px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;font:inherit}textarea{min-height:90px}
+    .section{display:none}.section.active{display:block}.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:0 1px 4px #0000000c}.metric .label{color:var(--muted);font-size:13px}.metric .value{font-size:26px;font-weight:800;margin:4px 0}.metric .sub{color:var(--muted);font-size:12px}
+    .badge{display:inline-flex;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#e2e8f0;color:#334155}.green{background:#d1fae5;color:#065f46}.blue{background:#dbeafe;color:#1e40af}.amber{background:#fef3c7;color:#92400e}.red{background:#fee2e2;color:#991b1b}
+    .muted{color:var(--muted)}.small{font-size:12px}.rowline{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:9px;background:#fff}.kpis{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+    .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}table{border-collapse:collapse;width:100%;min-width:1080px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;vertical-align:top}th{background:#f1f5f9;color:#475569}
+    .modal{position:fixed;inset:0;background:#0f172a77;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.show{display:flex}.modalbox{background:#fff;border-radius:22px;max-width:940px;width:100%;max-height:90vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:15px 18px}.modalbody{padding:18px}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.full{grid-column:1/-1}.checks{display:flex;gap:18px;flex-wrap:wrap;background:#f8fafc;padding:13px;border-radius:16px}
+    .bar{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden}.bar span{display:block;height:9px;background:#111827}.nowrap{white-space:nowrap}
+    @media(max-width:980px){.grid5,.grid4,.grid3,.grid2,.toolbar,.formgrid{grid-template-columns:1fr}.wrap{padding:14px}h1{font-size:28px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="pill">Diametral / EXSRTEL UAE Partner CRM · Complete Phase 1+</div>
+      <h1>UAE Sales Activity Control</h1>
+      <p class="lead">Kompletní jednoduché CRM pro řízení obchodního partnera v SAE/GCC: obchodní zástupci, firmy, kontakty, obchodní příležitosti, aktivity, nabídky, CORE vazby, procesní kontrola a exporty. Data jsou v této verzi uložena lokálně v prohlížeči.</p>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" onclick="exportCSV('salesReps')">Export reps</button>
+      <button class="btn secondary" onclick="exportCSV('companies')">Export companies</button>
+      <button class="btn secondary" onclick="exportCSV('deals')">Export deals</button>
+      <button class="btn secondary" onclick="exportManagementReport()">Management CSV</button>
+      <button class="btn danger" onclick="resetDemo()">Reset demo</button>
+    </div>
+  </div>
+
+  <div id="tabs" class="tabs"></div>
+
+  <div class="toolbar">
+    <input id="q" placeholder="Search company, sales rep, contact, deal, CORE number..." oninput="renderAll()">
+    <button class="btn secondary" onclick="openSalesRep()">+ New sales rep</button>
+    <button class="btn secondary" onclick="openCompany()">+ New company</button>
+    <button class="btn secondary" onclick="openContact()">+ New contact</button>
+    <button class="btn" onclick="openDeal()">+ New deal</button>
+  </div>
+
+  <section id="dashboard" class="section"></section>
+  <section id="salesreps" class="section"></section>
+  <section id="companies" class="section"></section>
+  <section id="contacts" class="section"></section>
+  <section id="deals" class="section"></section>
+  <section id="activities" class="section"></section>
+  <section id="process" class="section"></section>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modalbox">
+    <div class="modalhead"><h2 id="modalTitle"></h2><button class="btn secondary" onclick="closeModal()">Close</button></div>
+    <div id="modalBody" class="modalbody"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY="diametral-uae-crm-complete-salesreps-v1";
+const stages=["Lead","Qualified","Meeting planned","Offer sent","Negotiation","Won","Lost"];
+const segments=["University","Technical school","Industry","Government","Distributor","Contractor","Other"];
+const emirates=["Dubai","Abu Dhabi","Sharjah","Ajman","Ras Al Khaimah","Umm Al Quwain","Fujairah","Oman","Saudi Arabia","Other GCC"];
+const products=["VarioLab+","VarioClick","Electrical laboratory","ESD workplace","Clean room / electronics","Service & maintenance","VR training","Other"];
+const roles=["Partner manager","Sales representative","Technical sales","Service coordinator","Management","Other"];
+const territories=["Dubai","Abu Dhabi","Sharjah / Northern Emirates","Oman","Saudi Arabia","GCC","All UAE","Other"];
+const demo={
+ salesReps:[
+  {id:"r1",name:"EXSRTEL Sales Manager",company:"EXSRTEL",role:"Partner manager",email:"",phone:"",whatsapp:"",territory:"All UAE",active:true,targetMonthlyActivities:20,targetMonthlyPipeline:50000,notes:"Main partner contact responsible for UAE pipeline and reporting."},
+  {id:"r2",name:"Diametral Export Support",company:"Diametral",role:"Management",email:"",phone:"",whatsapp:"",territory:"GCC",active:true,targetMonthlyActivities:8,targetMonthlyPipeline:30000,notes:"Diametral supervision and technical/commercial support."}
+ ],
+ companies:[
+  {id:"c1",company:"American University of Sharjah",segment:"University",emirate:"Sharjah",status:"Existing customer",source:"Reference installation",salesRepId:"r1",nextStep:"Request testimonial / arrange demonstration visit",nextDate:"2026-05-18",notes:"Delivered one sample table. Important reference for education segment."},
+  {id:"c2",company:"Beam Trail",segment:"Industry",emirate:"Abu Dhabi",status:"Existing customer",source:"Direct sales",salesRepId:"r1",nextStep:"Follow-up for additional ESD or service workplaces",nextDate:"2026-05-21",notes:"Delivered two tables. Sensitive industry reference."},
+  {id:"c3",company:"University of Khorfakkan",segment:"University",emirate:"Sharjah",status:"Active opportunity",source:"Partner pipeline",salesRepId:"r1",nextStep:"Confirm technical scope and decision date",nextDate:"2026-05-16",notes:"Open offer around 20,570 USD."}
+ ],
+ contacts:[
+  {id:"p1",companyId:"c1",name:"Innovation Center",position:"Innovation / Lab contact",email:"",phone:"",decisionRole:"Influencer",notes:"Reference site contact."},
+  {id:"p2",companyId:"c2",name:"Production / maintenance",position:"Technical department",email:"",phone:"",decisionRole:"Technical decision maker",notes:"Potential follow-up for ESD workplaces."},
+  {id:"p3",companyId:"c3",name:"Procurement / laboratory department",position:"Procurement",email:"",phone:"",decisionRole:"Buyer",notes:"Needs follow-up after offer."}
+ ],
+ deals:[
+  {id:"d1",companyId:"c1",contactId:"p1",salesRepId:"r1",title:"Delivered VarioLab reference table",product:"VarioLab+",value:3450,currency:"USD",stage:"Won",probability:100,closeDate:"2025-10-15",offerNo:"UAE-2025-0001",coreNumber:"CORE-REF-AUS-001",crmComplete:true,coreComplete:true,paperFolder:true,offerPdf:false,lastActivityDate:"2025-10-15",lastActivity:"Delivered and paid"},
+  {id:"d2",companyId:"c2",contactId:"p2",salesRepId:"r1",title:"Two electrical workstations",product:"Electrical laboratory",value:14900,currency:"USD",stage:"Won",probability:100,closeDate:"2026-01-31",offerNo:"UAE-2026-0002",coreNumber:"CORE-BEAM-001",crmComplete:true,coreComplete:true,paperFolder:true,offerPdf:false,lastActivityDate:"2026-01-31",lastActivity:"Delivered and paid"},
+  {id:"d3",companyId:"c3",contactId:"p3",salesRepId:"r1",title:"Electrical laboratory equipment",product:"VarioClick",value:20570,currency:"USD",stage:"Offer sent",probability:55,closeDate:"2026-06-15",offerNo:"UAE-2026-0003",coreNumber:"CORE-KHF-001",crmComplete:true,coreComplete:true,paperFolder:false,offerPdf:false,lastActivityDate:"2026-05-01",lastActivity:"Offer sent, waiting for technical feedback"}
+ ],
+ activities:[
+  {id:"a1",companyId:"c3",dealId:"d3",salesRepId:"r1",type:"Call",subject:"Follow-up after offer",date:"2026-05-16",result:"Planned",nextAction:"Ask for decision date and missing technical details"},
+  {id:"a2",companyId:"c1",dealId:"d1",salesRepId:"r2",type:"Visit",subject:"Reference visit preparation",date:"2026-05-18",result:"Planned",nextAction:"Prepare short presentation and photo approval request"}
+ ]
+};
+let data=load(), tab="dashboard";
+function load(){try{return migrate(JSON.parse(localStorage.getItem(STORAGE_KEY))||structuredClone(demo))}catch(e){return structuredClone(demo)}}
+function migrate(d){d.salesReps=d.salesReps||structuredClone(demo.salesReps);d.companies=d.companies||[];d.contacts=d.contacts||[];d.deals=d.deals||[];d.activities=d.activities||[];let r=d.salesReps[0]?.id||"r1";d.companies.forEach(c=>{if(!c.salesRepId)c.salesRepId=r});d.deals.forEach(x=>{if(!x.salesRepId)x.salesRepId=company(x.companyId,d).salesRepId||r});d.activities.forEach(x=>{if(!x.salesRepId)x.salesRepId=deal(x.dealId,d).salesRepId||company(x.companyId,d).salesRepId||r});return d}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmt(n,c="USD"){return new Intl.NumberFormat("en-US",{style:"currency",currency:c,maximumFractionDigits:0}).format(Number(n||0))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function company(id,d=data){return d.companies.find(x=>x.id===id)||{}}
+function contact(id){return data.contacts.find(x=>x.id===id)||{}}
+function deal(id,d=data){return d.deals.find(x=>x.id===id)||{}}
+function rep(id){return data.salesReps.find(x=>x.id===id)||{}}
+function days(date){return Math.round((new Date(date)-new Date(today()))/86400000)}
+function ageDays(date){return Math.max(0,Math.round((new Date(today())-new Date(date||today()))/86400000))}
+function badge(t,c=""){return `<span class="badge ${c}">${esc(t)}</span>`}
+function qmatch(o){const q=document.getElementById("q")?.value.toLowerCase()||"";return JSON.stringify(o).toLowerCase().includes(q)}
+function renderTabs(){document.getElementById("tabs").innerHTML=[["dashboard","Dashboard"],["salesreps","Sales representatives"],["companies","Companies"],["contacts","Contacts"],["deals","Deals / Offers"],["activities","Activities"],["process","Process control"]].map(([k,l])=>`<button class="tab ${tab===k?'active':''}" onclick="setTab('${k}')">${l}</button>`).join("")}
+function setTab(t){tab=t;renderAll()}
+function renderAll(){save();renderTabs();document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(tab).classList.add("active");renderDashboard();renderSalesReps();renderCompanies();renderContacts();renderDeals();renderActivities();renderProcess()}
+function repStats(id){let open=data.deals.filter(d=>d.salesRepId===id&&!["Won","Lost"].includes(d.stage)),won=data.deals.filter(d=>d.salesRepId===id&&d.stage==="Won"),acts=data.activities.filter(a=>a.salesRepId===id),last=acts.map(a=>a.date).sort().reverse()[0]||"";return{companies:data.companies.filter(c=>c.salesRepId===id).length,openDeals:open.length,pipeline:open.reduce((s,d)=>s+Number(d.value||0),0),weighted:open.reduce((s,d)=>s+Number(d.value||0)*Number(d.probability||0)/100,0),won:won.reduce((s,d)=>s+Number(d.value||0),0),activities:acts.length,lastActivity:last,inactiveDays:last?ageDays(last):999}}
+function renderDashboard(){let open=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)),pipe=open.reduce((s,d)=>s+Number(d.value||0),0),weighted=open.reduce((s,d)=>s+Number(d.value||0)*Number(d.probability||0)/100,0),stale=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)&&ageDays(d.lastActivityDate)>7),issues=data.deals.filter(d=>!d.crmComplete||!d.coreComplete||!d.paperFolder||!d.coreNumber||!d.offerNo||!d.salesRepId),inactive=data.salesReps.filter(r=>r.active&&repStats(r.id).inactiveDays>7),up=[...data.activities].sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(0,6);document.getElementById("dashboard").innerHTML=`<div class="grid5"><div class="card metric"><div class="label">Sales reps</div><div class="value">${data.salesReps.filter(r=>r.active).length}</div><div class="sub">Active representatives</div></div><div class="card metric"><div class="label">Companies</div><div class="value">${data.companies.length}</div><div class="sub">Institutions and prospects</div></div><div class="card metric"><div class="label">Open pipeline</div><div class="value">${fmt(pipe)}</div><div class="sub">${open.length} active opportunities</div></div><div class="card metric"><div class="label">Weighted pipeline</div><div class="value">${fmt(weighted)}</div><div class="sub">Value × probability</div></div><div class="card metric"><div class="label">Alerts</div><div class="value">${stale.length+issues.length+inactive.length}</div><div class="sub">Stale/process/rep inactivity</div></div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Sales representative performance</h2>${data.salesReps.map(r=>{let s=repStats(r.id),pct=r.targetMonthlyPipeline?Math.min(100,Math.round(s.pipeline/r.targetMonthlyPipeline*100)):0;return `<div class="rowline"><div><b>${esc(r.name)}</b><br><span class="muted">${esc(r.company)} · ${esc(r.territory)}</span><br><span class="small">Pipeline ${fmt(s.pipeline)} · Activities ${s.activities} · Last ${esc(s.lastActivity||"—")}</span><div class="bar"><span style="width:${pct}%"></span></div></div>${s.inactiveDays>7&&r.active?badge(s.inactiveDays+" days inactive","amber"):badge(r.active?"Active":"Inactive",r.active?"green":"red")}</div>`}).join("")}</div><div class="card"><h2>Next activities</h2>${up.map(a=>`<div class="rowline"><div><b>${esc(a.subject)}</b><br><span class="muted">${esc(company(a.companyId).company)} · ${esc(a.type)} · ${esc(rep(a.salesRepId).name)}</span><br><span class="small">${esc(a.nextAction)}</span></div>${badge(a.date,days(a.date)<0?'red':days(a.date)<=3?'amber':'blue')}</div>`).join("")}</div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Pipeline by stage</h2>${stages.map(s=>{let arr=data.deals.filter(d=>d.stage===s),sum=arr.reduce((x,d)=>x+Number(d.value||0),0),pct=pipe?Math.min(100,Math.round(sum/pipe*100)):0;return `<p class="small"><b>${s}</b> <span class="muted">${fmt(sum)} · ${arr.length}</span></p><div class="bar"><span style="width:${pct}%"></span></div>`}).join("")}</div><div class="card"><h2>Deals without update > 7 days</h2>${stale.length?stale.map(d=>`<div class="rowline"><div><b>${esc(company(d.companyId).company)} — ${esc(d.title)}</b><br><span class="muted">${esc(rep(d.salesRepId).name)} · ${esc(d.offerNo)} · last ${esc(d.lastActivityDate)}</span></div>${badge(ageDays(d.lastActivityDate)+" days","amber")}</div>`).join(""):'<p class="muted">No stale open deals.</p>'}</div></div>`}
+function renderSalesReps(){let rows=data.salesReps.filter(qmatch);document.getElementById("salesreps").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openSalesRep()">+ New sales representative</button></div><div class="grid3">${rows.map(r=>{let s=repStats(r.id);return `<div class="card"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2>${esc(r.name)}</h2><p class="muted">${esc(r.company)} · ${esc(r.role)}</p></div>${badge(r.active?"Active":"Inactive",r.active?"green":"red")}</div><p class="small"><b>Territory:</b> ${esc(r.territory)}<br><b>E-mail:</b> ${esc(r.email||"—")}<br><b>Phone:</b> ${esc(r.phone||"—")}<br><b>WhatsApp:</b> ${esc(r.whatsapp||"—")}</p><div class="kpis">${badge("Companies: "+s.companies,"blue")}${badge("Open deals: "+s.openDeals,"blue")}${badge("Pipeline: "+fmt(s.pipeline),"green")}${badge("Activities: "+s.activities)}${s.inactiveDays>7&&r.active?badge("Inactive "+s.inactiveDays+" days","amber"):badge("Last: "+(s.lastActivity||"—"))}</div><p class="muted small">${esc(r.notes)}</p><button class="btn secondary small" onclick="openSalesRep('${r.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('salesReps','${r.id}')">Delete</button></div>`}).join("")}</div><div class="card" style="margin-top:14px"><h2>KPI table</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th>Territory</th><th>Status</th><th>Companies</th><th>Open deals</th><th>Pipeline</th><th>Weighted</th><th>Won</th><th>Activities</th><th>Last activity</th><th>Inactive days</th></tr></thead><tbody>${rows.map(r=>{let s=repStats(r.id);return `<tr><td><b>${esc(r.name)}</b><br><span class="muted">${esc(r.email)}</span></td><td>${esc(r.territory)}</td><td>${badge(r.active?"Active":"Inactive",r.active?"green":"red")}</td><td>${s.companies}</td><td>${s.openDeals}</td><td>${fmt(s.pipeline)}</td><td>${fmt(s.weighted)}</td><td>${fmt(s.won)}</td><td>${s.activities}</td><td>${esc(s.lastActivity||"—")}</td><td>${s.inactiveDays===999?"—":s.inactiveDays}</td></tr>`}).join("")}</tbody></table></div></div>`}
+function renderCompanies(){let rows=data.companies.filter(c=>qmatch({...c,salesRep:rep(c.salesRepId).name}));document.getElementById("companies").innerHTML=`<div class="grid2">${rows.map(c=>`<div class="card"><div style="display:flex;justify-content:space-between"><div><h2>${esc(c.company)}</h2><p class="muted">${esc(c.segment)} · ${esc(c.emirate)}</p></div>${badge(c.status,c.status.includes("Existing")?'green':c.status.includes("Active")?'blue':'')}</div><p><b>Sales rep:</b> ${esc(rep(c.salesRepId).name||"—")}<br><b>Source:</b> ${esc(c.source)}<br><b>Next step:</b> ${esc(c.nextStep)}<br><b>Next date:</b> ${esc(c.nextDate)}</p><p class="muted">${esc(c.notes)}</p><button class="btn secondary small" onclick="openCompany('${c.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('companies','${c.id}')">Delete</button></div>`).join("")}</div>`}
+function renderContacts(){let rows=data.contacts.filter(c=>qmatch({...c,company:company(c.companyId).company}));document.getElementById("contacts").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openContact()">+ New contact</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Name</th><th>Position</th><th>Role</th><th>E-mail</th><th>Phone</th><th>Notes</th><th></th></tr></thead><tbody>${rows.map(c=>`<tr><td>${esc(company(c.companyId).company)}</td><td><b>${esc(c.name)}</b></td><td>${esc(c.position)}</td><td>${esc(c.decisionRole)}</td><td>${esc(c.email)}</td><td>${esc(c.phone)}</td><td>${esc(c.notes)}</td><td class="nowrap"><button class="btn secondary small" onclick="openContact('${c.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('contacts','${c.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
+function control(d){return `${d.crmComplete?'✅':'⚠️'} CRM ${d.coreComplete?'✅':'⚠️'} CORE ${d.paperFolder?'✅':'⚠️'} Folder ${d.offerPdf?'✅':'—'} PDF`}
+function renderDeals(){let rows=data.deals.filter(d=>qmatch({...d,company:company(d.companyId).company,contact:contact(d.contactId).name,salesRep:rep(d.salesRepId).name}));document.getElementById("deals").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openDeal()">+ New deal</button></div><div class="tablewrap"><table><thead><tr><th>Company</th><th>Sales rep</th><th>Contact</th><th>Deal</th><th>Product</th><th>Stage</th><th>Value</th><th>Probability</th><th>Close</th><th>Offer / CORE</th><th>Last update</th><th>Control</th><th></th></tr></thead><tbody>${rows.map(d=>`<tr><td><b>${esc(company(d.companyId).company)}</b></td><td>${esc(rep(d.salesRepId).name||"—")}</td><td>${esc(contact(d.contactId).name)}</td><td>${esc(d.title)}<br><span class="muted">${esc(d.lastActivity)}</span></td><td>${esc(d.product)}</td><td>${badge(d.stage,d.stage==='Won'?'green':d.stage==='Lost'?'red':'blue')}</td><td>${fmt(d.value,d.currency)}</td><td>${esc(d.probability)}%</td><td>${esc(d.closeDate)}</td><td>${esc(d.offerNo)}<br><span class="muted">${esc(d.coreNumber)}</span></td><td>${esc(d.lastActivityDate)}<br>${ageDays(d.lastActivityDate)>7&&!["Won","Lost"].includes(d.stage)?badge(ageDays(d.lastActivityDate)+" days","amber"):""}</td><td class="small">${control(d)}</td><td class="nowrap"><button class="btn secondary small" onclick="openDeal('${d.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('deals','${d.id}')">Delete</button></td></tr>`).join("")}</tbody></table></div>`}
+function renderActivities(){let rows=data.activities.filter(a=>qmatch({...a,company:company(a.companyId).company,deal:deal(a.dealId).title,salesRep:rep(a.salesRepId).name}));document.getElementById("activities").innerHTML=`<div style="margin-bottom:12px"><button class="btn" onclick="openActivity()">+ New activity</button></div><div class="grid3">${rows.map(a=>`<div class="card"><div style="display:flex;justify-content:space-between"><div><h2>${esc(a.subject)}</h2><p class="muted">${esc(company(a.companyId).company)} · ${esc(deal(a.dealId).title||"No deal")}</p></div>${badge(a.result,a.result==='Done'?'green':days(a.date)<0?'red':days(a.date)<=3?'amber':'blue')}</div><p><b>Sales rep:</b> ${esc(rep(a.salesRepId).name||"—")}<br><b>Type:</b> ${esc(a.type)}<br><b>Date:</b> ${esc(a.date)}</p><p class="muted">${esc(a.nextAction)}</p><button class="btn secondary small" onclick="openActivity('${a.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('activities','${a.id}')">Delete</button></div>`).join("")}</div>`}
+function renderProcess(){let issues=data.deals.filter(d=>!d.crmComplete||!d.coreComplete||!d.paperFolder||!d.coreNumber||!d.offerNo||!d.salesRepId),over=data.activities.filter(a=>days(a.date)<0&&a.result!=="Done"),stale=data.deals.filter(d=>!["Won","Lost"].includes(d.stage)&&ageDays(d.lastActivityDate)>7),inactive=data.salesReps.filter(r=>r.active&&repStats(r.id).inactiveDays>7);document.getElementById("process").innerHTML=`<div class="card"><h2>Mandatory operating rule</h2><p class="lead">Records in CRM and CORE are considered the only decisive source of information about the status of each business case. Every opportunity must have responsible sales representative, next step, offer number, CORE number and documented activity history.</p></div><div class="grid4" style="margin-top:14px"><div class="card metric"><div class="label">Process issues</div><div class="value">${issues.length}</div><div class="sub">CRM/CORE/folder/offer/rep</div></div><div class="card metric"><div class="label">Overdue activities</div><div class="value">${over.length}</div><div class="sub">Planned date passed</div></div><div class="card metric"><div class="label">No update > 7 days</div><div class="value">${stale.length}</div><div class="sub">Open deals</div></div><div class="card metric"><div class="label">Inactive reps</div><div class="value">${inactive.length}</div><div class="sub">No activity > 7 days</div></div></div><div class="grid2" style="margin-top:14px"><div class="card"><h2>Deals requiring correction</h2>${issues.map(d=>`<div class="rowline"><div><b>${esc(company(d.companyId).company)} — ${esc(d.title)}</b><br><span class="muted">${esc(rep(d.salesRepId).name||"Missing sales rep")} · ${esc(d.offerNo||"Missing offer number")} · ${esc(d.coreNumber||"Missing CORE number")}</span></div><div>${!d.salesRepId?badge("Sales rep missing","amber"):""} ${!d.crmComplete?badge("CRM incomplete","amber"):""} ${!d.coreComplete?badge("CORE incomplete","amber"):""} ${!d.paperFolder?badge("Folder missing","amber"):""} ${!d.offerNo?badge("Offer No missing","amber"):""}</div></div>`).join("")||'<p class="muted">No process issues.</p>'}</div><div class="card"><h2>Inactive sales representatives</h2>${inactive.map(r=>{let s=repStats(r.id);return `<div class="rowline"><div><b>${esc(r.name)}</b><br><span class="muted">${esc(r.company)} · ${esc(r.territory)} · ${esc(r.email||"")}</span></div>${badge(s.inactiveDays+" days inactive","amber")}</div>`}).join("")||'<p class="muted">No inactive representatives.</p>'}</div></div>`}
+function opts(a,s){return a.map(x=>`<option value="${esc(x)}" ${String(x)===String(s)?"selected":""}>${esc(x)}</option>`).join("")}
+function companyOpts(s){return data.companies.map(c=>`<option value="${esc(c.id)}" ${c.id===s?"selected":""}>${esc(c.company)}</option>`).join("")}
+function repOpts(s){return data.salesReps.map(r=>`<option value="${esc(r.id)}" ${r.id===s?"selected":""}>${esc(r.name)} — ${esc(r.company)} / ${esc(r.territory)}</option>`).join("")}
+function contactOpts(cid,s){return data.contacts.filter(c=>!cid||c.companyId===cid).map(c=>`<option value="${esc(c.id)}" ${c.id===s?"selected":""}>${esc(c.name)} — ${esc(company(c.companyId).company)}</option>`).join("")}
+function dealOpts(cid,s){return `<option value="">No deal</option>`+data.deals.filter(d=>!cid||d.companyId===cid).map(d=>`<option value="${esc(d.id)}" ${d.id===s?"selected":""}>${esc(d.title)} — ${esc(company(d.companyId).company)}</option>`).join("")}
+function modal(t,h){document.getElementById("modalTitle").innerText=t;document.getElementById("modalBody").innerHTML=h;document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function form(id){return Object.fromEntries(new FormData(document.getElementById(id)).entries())}
+function checked(n){return document.querySelector(`[name="${n}"]`)?.checked||false}
+function openSalesRep(id){let r=id?data.salesReps.find(x=>x.id===id):{name:"",company:"EXSRTEL",role:"Sales representative",email:"",phone:"",whatsapp:"",territory:"Dubai",active:true,targetMonthlyActivities:20,targetMonthlyPipeline:50000,notes:""};modal(id?"Edit sales representative":"New sales representative",`<form id="fRep" class="formgrid"><label>Name<input name="name" value="${esc(r.name)}" required></label><label>Company / Partner<input name="company" value="${esc(r.company)}"></label><label>Role<select name="role">${opts(roles,r.role)}</select></label><label>Territory<select name="territory">${opts(territories,r.territory)}</select></label><label>E-mail<input name="email" value="${esc(r.email)}"></label><label>Phone<input name="phone" value="${esc(r.phone)}"></label><label>WhatsApp<input name="whatsapp" value="${esc(r.whatsapp)}"></label><label>Monthly activity target<input type="number" name="targetMonthlyActivities" value="${esc(r.targetMonthlyActivities)}"></label><label>Monthly pipeline target USD<input type="number" name="targetMonthlyPipeline" value="${esc(r.targetMonthlyPipeline)}"></label><div class="checks"><label><input type="checkbox" name="active" ${r.active?"checked":""}> Active</label></div><label class="full">Notes<textarea name="notes">${esc(r.notes)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveRep('${id||""}')">Save</button></div></form>`)}
+function saveRep(id){let f=form("fRep");f.active=checked("active");f.targetMonthlyActivities=Number(f.targetMonthlyActivities||0);f.targetMonthlyPipeline=Number(f.targetMonthlyPipeline||0);if(id)Object.assign(data.salesReps.find(x=>x.id===id),f);else data.salesReps.push({id:uid("r"),...f});closeModal();renderAll()}
+function openCompany(id){let c=id?data.companies.find(x=>x.id===id):{company:"",segment:"University",emirate:"Dubai",status:"New lead",source:"",salesRepId:data.salesReps[0]?.id||"",nextStep:"",nextDate:today(),notes:""};modal(id?"Edit company":"New company",`<form id="fCompany" class="formgrid"><label>Company / Institution<input name="company" value="${esc(c.company)}" required></label><label>Assigned sales representative<select name="salesRepId">${repOpts(c.salesRepId)}</select></label><label>Segment<select name="segment">${opts(segments,c.segment)}</select></label><label>Emirate / Territory<select name="emirate">${opts(emirates,c.emirate)}</select></label><label>Status<input name="status" value="${esc(c.status)}"></label><label>Lead source<input name="source" value="${esc(c.source)}"></label><label>Next step<input name="nextStep" value="${esc(c.nextStep)}"></label><label>Next step date<input type="date" name="nextDate" value="${esc(c.nextDate)}"></label><label class="full">Notes<textarea name="notes">${esc(c.notes)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveCompany('${id||""}')">Save</button></div></form>`)}
+function saveCompany(id){let f=form("fCompany");if(id)Object.assign(data.companies.find(x=>x.id===id),f);else data.companies.push({id:uid("c"),...f});closeModal();renderAll()}
+function openContact(id){let c=id?data.contacts.find(x=>x.id===id):{companyId:data.companies[0]?.id||"",name:"",position:"",email:"",phone:"",decisionRole:"Influencer",notes:""};modal(id?"Edit contact":"New contact",`<form id="fContact" class="formgrid"><label>Company<select name="companyId">${companyOpts(c.companyId)}</select></label><label>Name<input name="name" value="${esc(c.name)}" required></label><label>Position<input name="position" value="${esc(c.position)}"></label><label>Decision role<select name="decisionRole">${opts(["Decision maker","Technical decision maker","Buyer","Influencer","User","Other"],c.decisionRole)}</select></label><label>E-mail<input name="email" value="${esc(c.email)}"></label><label>Phone<input name="phone" value="${esc(c.phone)}"></label><label class="full">Notes<textarea name="notes">${esc(c.notes)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveContact('${id||""}')">Save</button></div></form>`)}
+function saveContact(id){let f=form("fContact");if(id)Object.assign(data.contacts.find(x=>x.id===id),f);else data.contacts.push({id:uid("p"),...f});closeModal();renderAll()}
+function nextOfferNo(){let y=new Date().getFullYear(),nums=data.deals.map(d=>String(d.offerNo||"").match(/UAE-\d{4}-(\d+)/)).filter(Boolean).map(m=>Number(m[1])),n=(nums.length?Math.max(...nums):0)+1;return `UAE-${y}-${String(n).padStart(4,"0")}`}
+function openDeal(id){let dc=data.companies[0]?.id||"",dr=company(dc).salesRepId||data.salesReps[0]?.id||"",d=id?data.deals.find(x=>x.id===id):{companyId:dc,contactId:"",salesRepId:dr,title:"",product:"VarioLab+",value:0,currency:"USD",stage:"Lead",probability:20,closeDate:today(),offerNo:nextOfferNo(),coreNumber:"",crmComplete:false,coreComplete:false,paperFolder:false,offerPdf:false,lastActivityDate:today(),lastActivity:""};modal(id?"Edit deal":"New deal",`<form id="fDeal" class="formgrid"><label>Company<select name="companyId" id="dealCompany" onchange="refreshDeal()">${companyOpts(d.companyId)}</select></label><label>Assigned sales representative<select name="salesRepId" id="dealRep">${repOpts(d.salesRepId)}</select></label><label>Contact<select name="contactId" id="dealContact">${contactOpts(d.companyId,d.contactId)}</select></label><label>Deal title<input name="title" value="${esc(d.title)}" required></label><label>Product line<select name="product">${opts(products,d.product)}</select></label><label>Stage<select name="stage">${opts(stages,d.stage)}</select></label><label>Value<input type="number" name="value" value="${esc(d.value)}"></label><label>Currency<input name="currency" value="${esc(d.currency)}"></label><label>Probability %<input type="number" name="probability" value="${esc(d.probability)}"></label><label>Expected close date<input type="date" name="closeDate" value="${esc(d.closeDate)}"></label><label>Offer number<input name="offerNo" value="${esc(d.offerNo)}"></label><label>CORE / Offer number<input name="coreNumber" value="${esc(d.coreNumber)}"></label><label>Last activity date<input type="date" name="lastActivityDate" value="${esc(d.lastActivityDate)}"></label><div class="full checks"><b>Mandatory control</b><label><input type="checkbox" name="crmComplete" ${d.crmComplete?"checked":""}> CRM complete</label><label><input type="checkbox" name="coreComplete" ${d.coreComplete?"checked":""}> CORE complete</label><label><input type="checkbox" name="paperFolder" ${d.paperFolder?"checked":""}> Paper folder</label><label><input type="checkbox" name="offerPdf" ${d.offerPdf?"checked":""}> PDF archived</label></div><label class="full">Last activity / comment<textarea name="lastActivity">${esc(d.lastActivity)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveDeal('${id||""}')">Save</button></div></form>`)}
+function refreshDeal(){let cid=document.getElementById("dealCompany").value;document.getElementById("dealContact").innerHTML=contactOpts(cid,"");let r=company(cid).salesRepId;if(r)document.getElementById("dealRep").value=r}
+function saveDeal(id){let f=form("fDeal");["value","probability"].forEach(k=>f[k]=Number(f[k]||0));["crmComplete","coreComplete","paperFolder","offerPdf"].forEach(k=>f[k]=checked(k));if(id)Object.assign(data.deals.find(x=>x.id===id),f);else data.deals.push({id:uid("d"),...f});closeModal();renderAll()}
+function openActivity(id){let dc=data.companies[0]?.id||"",dr=company(dc).salesRepId||data.salesReps[0]?.id||"",a=id?data.activities.find(x=>x.id===id):{companyId:dc,dealId:"",salesRepId:dr,type:"Call",subject:"",date:today(),result:"Planned",nextAction:""};modal(id?"Edit activity":"New activity",`<form id="fAct" class="formgrid"><label>Company<select name="companyId" id="actCompany" onchange="refreshAct()">${companyOpts(a.companyId)}</select></label><label>Assigned sales representative<select name="salesRepId" id="actRep">${repOpts(a.salesRepId)}</select></label><label>Deal<select name="dealId" id="actDeal">${dealOpts(a.companyId,a.dealId)}</select></label><label>Activity type<select name="type">${opts(["Call","E-mail","Visit","Demo","Offer follow-up","Management review"],a.type)}</select></label><label>Subject<input name="subject" value="${esc(a.subject)}" required></label><label>Date<input type="date" name="date" value="${esc(a.date)}"></label><label>Result<select name="result">${opts(["Planned","Done","Postponed","No response","Cancelled"],a.result)}</select></label><label class="full">Next action / result note<textarea name="nextAction">${esc(a.nextAction)}</textarea></label><div class="full" style="text-align:right"><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button> <button type="button" class="btn" onclick="saveActivity('${id||""}')">Save</button></div></form>`)}
+function refreshAct(){let cid=document.getElementById("actCompany").value;document.getElementById("actDeal").innerHTML=dealOpts(cid,"");let r=company(cid).salesRepId;if(r)document.getElementById("actRep").value=r}
+function saveActivity(id){let f=form("fAct");if(id)Object.assign(data.activities.find(x=>x.id===id),f);else data.activities.push({id:uid("a"),...f});closeModal();renderAll()}
+function deleteItem(col,id){if(col==="salesReps"&&(data.companies.some(c=>c.salesRepId===id)||data.deals.some(d=>d.salesRepId===id)||data.activities.some(a=>a.salesRepId===id))){alert("This sales representative is used. Reassign records first.");return}if(confirm("Delete this record?")){data[col]=data[col].filter(x=>x.id!==id);renderAll()}}
+function resetDemo(){if(confirm("Reset all browser data to demo data?")){data=structuredClone(demo);save();renderAll()}}
+function exportCSV(col){
+  let rows=[];
+  if(col==="companies"){
+    rows=data.companies.map(c=>({
+      company:c.company||"",
+      salesRepName:rep(c.salesRepId).name||"",
+      salesRepCompany:rep(c.salesRepId).company||"",
+      segment:c.segment||"",
+      emirate:c.emirate||"",
+      status:c.status||"",
+      source:c.source||"",
+      nextStep:c.nextStep||"",
+      nextDate:c.nextDate||"",
+      notes:c.notes||"",
+      technicalCompanyId:c.id||"",
+      technicalSalesRepId:c.salesRepId||""
+    }));
+  } else if(col==="deals"){
+    rows=data.deals.map(d=>({
+      companyName:company(d.companyId).company||"",
+      contactName:contact(d.contactId).name||"",
+      salesRepName:rep(d.salesRepId).name||"",
+      salesRepCompany:rep(d.salesRepId).company||"",
+      title:d.title||"",
+      product:d.product||"",
+      value:d.value||0,
+      currency:d.currency||"",
+      stage:d.stage||"",
+      probability:d.probability||0,
+      closeDate:d.closeDate||"",
+      offerNo:d.offerNo||"",
+      coreNumber:d.coreNumber||"",
+      crmComplete:d.crmComplete,
+      coreComplete:d.coreComplete,
+      paperFolder:d.paperFolder,
+      offerPdf:d.offerPdf,
+      lastActivityDate:d.lastActivityDate||"",
+      lastActivity:d.lastActivity||"",
+      technicalDealId:d.id||"",
+      technicalCompanyId:d.companyId||"",
+      technicalContactId:d.contactId||"",
+      technicalSalesRepId:d.salesRepId||""
+    }));
+  } else if(col==="contacts"){
+    rows=data.contacts.map(c=>({
+      companyName:company(c.companyId).company||"",
+      name:c.name||"",
+      position:c.position||"",
+      decisionRole:c.decisionRole||"",
+      email:c.email||"",
+      phone:c.phone||"",
+      notes:c.notes||"",
+      technicalContactId:c.id||"",
+      technicalCompanyId:c.companyId||""
+    }));
+  } else if(col==="salesReps"){
+    rows=data.salesReps.map(r=>({
+      name:r.name||"",
+      company:r.company||"",
+      role:r.role||"",
+      email:r.email||"",
+      phone:r.phone||"",
+      whatsapp:r.whatsapp||"",
+      territory:r.territory||"",
+      active:r.active,
+      targetMonthlyActivities:r.targetMonthlyActivities||0,
+      targetMonthlyPipeline:r.targetMonthlyPipeline||0,
+      notes:r.notes||"",
+      technicalSalesRepId:r.id||""
+    }));
+  } else {
+    rows=data[col]||[];
+  }
+  downloadCSV(`uae-crm-${col}.csv`,rows)
+}
+function exportManagementReport(){
+  let rows=data.deals.map(d=>({
+    companyName:company(d.companyId).company||"",
+    contactName:contact(d.contactId).name||"",
+    salesRepName:rep(d.salesRepId).name||"",
+    salesRepEmail:rep(d.salesRepId).email||"",
+    territory:rep(d.salesRepId).territory||"",
+    dealTitle:d.title||"",
+    product:d.product||"",
+    stage:d.stage||"",
+    value:d.value||0,
+    currency:d.currency||"",
+    probability:d.probability||0,
+    weightedValue:Number(d.value||0)*Number(d.probability||0)/100,
+    closeDate:d.closeDate||"",
+    offerNo:d.offerNo||"",
+    coreNumber:d.coreNumber||"",
+    lastActivityDate:d.lastActivityDate||"",
+    daysWithoutUpdate:ageDays(d.lastActivityDate),
+    crmComplete:d.crmComplete,
+    coreComplete:d.coreComplete,
+    paperFolder:d.paperFolder,
+    offerPdf:d.offerPdf,
+    lastActivity:d.lastActivity||"",
+    technicalDealId:d.id||"",
+    technicalCompanyId:d.companyId||"",
+    technicalContactId:d.contactId||"",
+    technicalSalesRepId:d.salesRepId||""
+  }));
+  downloadCSV("uae-crm-management-report.csv",rows)
+}
+function downloadCSV(filename,rows){if(!rows.length){alert("No data.");return}let heads=[...new Set(rows.flatMap(r=>Object.keys(r)))],escCsv=v=>`"${String(v??"").replaceAll('"','""')}"`,csv=[heads.join(","),...rows.map(r=>heads.map(h=>escCsv(r[h])).join(","))].join("\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url)}
+renderAll();
+</script>
+</body>
+</html>
